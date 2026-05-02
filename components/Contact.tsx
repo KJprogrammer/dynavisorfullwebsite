@@ -1,71 +1,86 @@
-"use client";
+'use client'
+import { useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+const INQUIRY_TYPES = [
+  'Technical Evaluation',
+  'Deployment Brief',
+  'DoD / Federal Procurement',
+  'Financial Services',
+  'Partnership Inquiry',
+  'Other',
+]
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", company: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-15%' })
+  const [form, setForm] = useState({ name: '', org: '', email: '', type: '', message: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = encodeURIComponent(`Dynavisor Access Request — ${form.company || form.name}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nCompany: ${form.company}\nEmail: ${form.email}\n\n${form.message}`
-    );
-    window.location.href = `mailto:info@dynavisor.com?subject=${subject}&body=${body}`;
-    setSent(true);
-  };
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
-  const inputClass =
-    "w-full bg-transparent border-b border-white/[0.1] py-3 text-sm text-[#e2ddd4] placeholder-[#e2ddd4]/20 focus:outline-none focus:border-[#c4a55a]/40 transition-colors duration-200 font-sans";
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('sending')
+    await new Promise(r => setTimeout(r, 900))
+    setStatus('sent')
+  }
+
+  const inputStyle = {
+    width: '100%',
+    background: 'rgba(6,8,16,0.55)',
+    backdropFilter: 'blur(12px)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    padding: '14px 16px',
+    color: 'var(--text-body)',
+    fontFamily: 'var(--font-dm-sans)',
+    fontSize: 14,
+    outline: 'none',
+    transition: 'border-color 200ms ease',
+  }
 
   return (
-    <section id="contact" className="relative py-36 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="rule mb-20" />
+    <section
+      id="contact"
+      ref={ref}
+      style={{
+        position: 'relative', zIndex: 1,
+        padding: 'var(--section-gap) 0',
+        background: 'rgba(6,8,16,0.75)',
+        backdropFilter: 'blur(3px)',
+        borderTop: '1px solid rgba(184,151,90,0.1)',
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 48px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }}>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-4 mb-20"
-        >
-          <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#c4a55a]/60">
-            05 — Contact
-          </span>
-          <div className="flex-1 h-px bg-white/[0.05]" />
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-20 lg:gap-32">
           {/* Left */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="font-display text-[clamp(2.4rem,5vw,4.5rem)] font-light leading-[1.06] text-[#e2ddd4] mb-8">
-              Ready to accelerate
-              <br />
-              <em className="gradient-gold not-italic">your infrastructure?</em>
+            <div className="section-label" style={{ marginBottom: 24 }}>07 / Contact</div>
+            <h2 className="type-title" style={{ color: 'var(--text-primary)', marginBottom: 24, maxWidth: 440 }}>
+              Ready to evaluate<br />
+              <em style={{ color: 'var(--gold-light)' }}>TorrentPro™?</em>
             </h2>
-            <p className="text-[#e2ddd4]/38 text-sm leading-[1.9] mb-12 max-w-sm">
-              Whether you&apos;re deploying TorrentPro on an existing cluster, exploring
-              the Sovereign AI Platform, or looking to partner — we respond within
-              one business day.
+            <p className="type-body" style={{ color: 'var(--text-muted)', marginBottom: 40 }}>
+              Technical evaluations, deployment briefs, and federal procurement inquiries
+              handled directly by Dynavisor engineers — not sales reps.
             </p>
 
-            <div className="space-y-5">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {[
-                { label: "Email", value: "info@dynavisor.com" },
-                { label: "Partnership", value: "Kaltech AI × Dynavisor Joint Team" },
-                { label: "Hardware", value: "Hyperscalers · Certified Partner" },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-baseline gap-4">
-                  <span className="text-[10px] tracking-[0.22em] uppercase text-[#e2ddd4]/22 w-24 flex-shrink-0">{label}</span>
-                  <span className="text-sm text-[#e2ddd4]/55">{value}</span>
+                { label: 'Email', val: 'info@dynavisor.com' },
+                { label: 'Phone', val: '+1 (510) 673-2065' },
+                { label: 'Address', val: '1389 Cristal Court, San Jose, CA 95127' },
+              ].map(c => (
+                <div key={c.label}>
+                  <div className="type-label" style={{ color: 'var(--gold-dim)', marginBottom: 4 }}>{c.label}</div>
+                  <div className="type-body" style={{ color: 'var(--text-body)', fontSize: 14 }}>{c.val}</div>
                 </div>
               ))}
             </div>
@@ -74,69 +89,42 @@ export default function Contact() {
           {/* Form */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
           >
-            {sent ? (
-              <div className="py-20 text-center">
-                <div className="font-display text-4xl font-light text-[#c4a55a] mb-3">Thank you.</div>
-                <p className="text-[#e2ddd4]/35 text-sm">
-                  The Dynavisor team will reach out within 1 business day.
+            {status === 'sent' ? (
+              <div style={{ padding: 40, background: 'rgba(6,8,16,0.55)', backdropFilter: 'blur(24px)', border: '1px solid rgba(184,151,90,0.2)', boxShadow: '0 8px 48px rgba(0,0,0,0.5)' }}>
+                <div className="type-label" style={{ color: 'var(--gold)', marginBottom: 12 }}>▲ MESSAGE RECEIVED</div>
+                <p className="type-body" style={{ color: 'var(--text-muted)' }}>
+                  A Dynavisor engineer will respond within one business day.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid sm:grid-cols-2 gap-8">
-                  <div>
-                    <label className="block text-[10px] tracking-[0.25em] uppercase text-[#e2ddd4]/28 mb-3">Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Jane Smith"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] tracking-[0.25em] uppercase text-[#e2ddd4]/28 mb-3">Company</label>
-                    <input
-                      type="text"
-                      placeholder="Acme Corp"
-                      value={form.company}
-                      onChange={(e) => setForm({ ...form, company: e.target.value })}
-                      className={inputClass}
-                    />
-                  </div>
+              <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <input name="name" placeholder="Full Name" required value={form.name} onChange={onChange} style={inputStyle} />
+                  <input name="org" placeholder="Organization" value={form.org} onChange={onChange} style={inputStyle} />
                 </div>
-
-                <div>
-                  <label className="block text-[10px] tracking-[0.25em] uppercase text-[#e2ddd4]/28 mb-3">Work Email</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="jane@company.com"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] tracking-[0.25em] uppercase text-[#e2ddd4]/28 mb-3">Use Case</label>
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Describe your infrastructure challenge or AI workload..."
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className={`${inputClass} resize-none border-b-0 border border-white/[0.07] p-3 bg-white/[0.018]`}
-                  />
-                </div>
-
-                <button type="submit" className="btn-gold w-full justify-center text-[11px] py-3.5">
-                  Send Request →
+                <input name="email" type="email" placeholder="Email Address" required value={form.email} onChange={onChange} style={inputStyle} />
+                <select name="type" value={form.type} onChange={onChange} style={{ ...inputStyle, color: form.type ? 'var(--text-body)' : 'var(--text-muted)' }}>
+                  <option value="" disabled>Inquiry Type</option>
+                  {INQUIRY_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <textarea
+                  name="message"
+                  placeholder="Brief description of your use case or requirements"
+                  rows={5}
+                  value={form.message}
+                  onChange={onChange}
+                  style={{ ...inputStyle, resize: 'vertical', minHeight: 120 }}
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="btn-primary"
+                  style={{ justifyContent: 'center', opacity: status === 'sending' ? 0.6 : 1, cursor: status === 'sending' ? 'wait' : 'none' }}
+                >
+                  {status === 'sending' ? 'Sending...' : (<>Send Inquiry <ArrowRight size={12} /></>)}
                 </button>
               </form>
             )}
@@ -144,5 +132,5 @@ export default function Contact() {
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,25 +1,29 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Products from "@/components/Products";
-import Technology from "@/components/Technology";
-import Partnership from "@/components/Partnership";
-import UseCases from "@/components/UseCases";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import Navbar from '@/components/Navbar'
+import Hero from '@/components/Hero'
+import CredentialStrip from '@/components/CredentialStrip'
+import BenchmarkReveal from '@/components/BenchmarkReveal'
+import PlatformLayers from '@/components/PlatformLayers'
+import ValidationStamps from '@/components/ValidationStamps'
+import UseCases from '@/components/UseCases'
+import Partnership from '@/components/Partnership'
+import Contact from '@/components/Contact'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
     <>
       <Navbar />
-      <main>
+      <main style={{ position: 'relative', zIndex: 1 }}>
         <Hero />
-        <Products />
-        <Technology />
-        <Partnership />
+        <CredentialStrip />
+        <BenchmarkReveal />
+        <PlatformLayers />
+        <ValidationStamps />
         <UseCases />
+        <Partnership />
         <Contact />
       </main>
       <Footer />
     </>
-  );
+  )
 }

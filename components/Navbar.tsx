@@ -1,74 +1,105 @@
-"use client";
+'use client'
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+const NAV_LINKS = [
+  { label: 'Platform',   href: '#platform' },
+  { label: 'Validation', href: '#validation' },
+  { label: 'Solutions',  href: '#solutions' },
+  { label: 'Partners',   href: '#partners' },
+  { label: 'About',      href: '#about' },
+]
 
-const navLinks = [
-  { label: "Products", href: "#products" },
-  { label: "Technology", href: "#technology" },
-  { label: "Partnership", href: "#partnership" },
-  { label: "Use Cases", href: "#use-cases" },
-  { label: "Contact", href: "#contact" },
-];
+function NavLink({ label, href }: { label: string; href: string }) {
+  const lineRef = useRef<HTMLSpanElement>(null)
+  return (
+    <a
+      href={href}
+      className="relative group"
+      style={{ fontFamily: 'var(--font-dm-sans)', fontSize: 12, letterSpacing: '0.1em', color: 'var(--text-muted)', textTransform: 'uppercase', transition: 'color 200ms ease' }}
+      onMouseEnter={() => { if (lineRef.current) lineRef.current.style.transform = 'scaleX(1)' }}
+      onMouseLeave={() => { if (lineRef.current) lineRef.current.style.transform = 'scaleX(0)' }}
+    >
+      {label}
+      <span
+        ref={lineRef}
+        style={{
+          position: 'absolute', bottom: -2, left: 0, right: 0, height: 1,
+          background: 'var(--gold)', transformOrigin: 'center',
+          transform: 'scaleX(0)', transition: 'transform 250ms var(--ease-out)',
+        }}
+      />
+    </a>
+  )
+}
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const lineRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const fn = () => setScrolled(window.scrollY > 80)
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  useEffect(() => {
+    if (lineRef.current) {
+      lineRef.current.style.transform = 'scaleX(1)'
+    }
+  }, [])
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "backdrop-blur-2xl bg-[#000008]/70 border-b border-white/[0.05]"
-            : ""
-        }`}
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+          transition: 'background 300ms ease, border-color 300ms ease',
+          background: scrolled ? 'rgba(10,11,18,0.75)' : 'transparent',
+          borderBottom: scrolled ? '1px solid rgba(184,151,90,0.1)' : '1px solid transparent',
+          backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        }}
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+
           {/* Logo */}
-          <a href="#" className="flex items-center gap-0.5 group">
-            <span className="font-display text-xl font-light tracking-wider text-[#e2ddd4] group-hover:text-[#c4a55a] transition-colors duration-300">
-              Dyna
+          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 0, textDecoration: 'none', position: 'relative' }}>
+            <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
+              DYNA
             </span>
-            <span className="font-display text-xl font-light tracking-wider text-[#c4a55a]">
-              visor
+            <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: 13, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--gold)' }}>
+              VISOR
             </span>
+            <span
+              ref={lineRef}
+              style={{
+                position: 'absolute', bottom: -3, left: 0, right: 0, height: 1,
+                background: 'linear-gradient(90deg, var(--gold-dim), transparent)',
+                transformOrigin: 'left', transform: 'scaleX(0)',
+                transition: 'transform 500ms var(--ease-out)',
+              }}
+            />
           </a>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-9">
-            {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="font-sans text-[11px] tracking-[0.18em] uppercase text-[#e2ddd4]/40 hover:text-[#e2ddd4]/80 transition-colors duration-200"
-              >
-                {l.label}
-              </a>
-            ))}
+          <div className="hidden md:flex" style={{ alignItems: 'center', gap: 36 }}>
+            {NAV_LINKS.map(l => <NavLink key={l.href} {...l} />)}
           </div>
 
           {/* CTA + hamburger */}
-          <div className="flex items-center gap-4">
-            <a
-              href="#contact"
-              className="hidden md:inline-flex btn-gold text-[11px] py-2 px-5"
-            >
-              Get Access
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <a href="#contact" className="hidden md:inline-flex btn-primary" style={{ padding: '10px 20px', fontSize: 9 }}>
+              Request Brief
             </a>
             <button
-              className="md:hidden text-[#e2ddd4]/50 hover:text-[#e2ddd4] transition-colors"
+              className="md:hidden"
               onClick={() => setMenuOpen(!menuOpen)}
+              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'none' }}
               aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -82,28 +113,33 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-16 left-0 right-0 z-40 backdrop-blur-2xl bg-[#000008]/95 border-b border-white/[0.05] px-6 py-8 flex flex-col gap-6"
+            style={{
+              position: 'fixed', top: 64, left: 0, right: 0, zIndex: 99,
+              background: 'rgba(10,11,18,0.97)', backdropFilter: 'blur(16px)',
+              borderBottom: '1px solid rgba(184,151,90,0.1)',
+              padding: '32px 32px 40px',
+              display: 'flex', flexDirection: 'column', gap: 28,
+            }}
           >
-            {navLinks.map((l) => (
-              <a
+            {NAV_LINKS.map((l, i) => (
+              <motion.a
                 key={l.href}
                 href={l.href}
-                className="font-sans text-xs tracking-[0.2em] uppercase text-[#e2ddd4]/50 hover:text-[#e2ddd4] transition-colors"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.06 }}
                 onClick={() => setMenuOpen(false)}
+                style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--text-muted)', textDecoration: 'none' }}
               >
                 {l.label}
-              </a>
+              </motion.a>
             ))}
-            <a
-              href="#contact"
-              className="btn-gold text-center text-xs mt-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              Get Access
+            <a href="#contact" className="btn-primary" style={{ textAlign: 'center', marginTop: 8, justifyContent: 'center' }} onClick={() => setMenuOpen(false)}>
+              Request Brief
             </a>
           </motion.div>
         )}
       </AnimatePresence>
     </>
-  );
+  )
 }

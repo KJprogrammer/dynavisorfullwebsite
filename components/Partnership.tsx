@@ -1,123 +1,145 @@
-"use client";
+'use client'
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
 
-import { motion } from "framer-motion";
-
-const pillars = [
+const PARTNERS = [
   {
-    label: "Autonomous Agents",
-    body: "Kaltech AI deploys intelligent agents that self-optimize across Dynavisor's accelerated compute layer in real time — no manual tuning.",
+    name: 'KalTech AI',
+    location: 'Toronto, Canada',
+    role: 'Joint Venture — Sovereign AI Layer',
+    desc: 'KalTech\'s "Sixth Sense" agentic AI platform runs on top of TorrentPro\'s data fabric. Together they form the Sovereign Financial Intelligence Fabric for regulated enterprises and Sovereign Defence Intelligence for government buyers.',
+    badge: 'Joint Platform Partner',
+    metric: 'Sixth Sense', metricLabel: 'Agentic AI on fabric',
+    gold: true,
   },
   {
-    label: "Data Sovereignty",
-    body: "All AI workloads execute within your jurisdiction. No data leaves your perimeter. Compliance-ready from day one.",
+    name: 'Napatech',
+    location: 'Copenhagen, Denmark',
+    role: 'DPU Integration Partner',
+    desc: 'Napatech SmartNIC/DPU technology is embedded in TorrentPro\'s compute acceleration layer, offloading network processing and enabling line-rate packet capture for financial and telecom workloads.',
+    badge: 'Technology Integration',
+    metric: '100Gbps', metricLabel: 'Line-rate DPU processing',
+    gold: false,
   },
   {
-    label: "Supercompute Inference",
-    body: "TorrentPro's I/O layer cuts model training and inference cycles versus any standard cloud configuration.",
+    name: 'University of Toronto',
+    location: 'Toronto, Canada',
+    role: 'Research & Backing',
+    desc: 'Academic backing underpins the KalTech AI research lineage, with ongoing collaboration on sovereign AI architectures and quantum-resistant data fabric security models.',
+    badge: 'Academic Partner',
+    metric: 'R&D', metricLabel: 'Foundational research backing',
+    gold: false,
   },
-  {
-    label: "Multi-Cloud & Edge",
-    body: "Single control plane across public cloud, private data centers, and edge nodes. One platform, every environment.",
-  },
-  {
-    label: "AI Infrastructure Insights",
-    body: "Kaltech's analytics surfaces TorrentPro telemetry: predictive scaling, cost anomalies, and performance forecasting.",
-  },
-  {
-    label: "Full-Stack Engineering",
-    body: "From model training pipelines to production agents — Kaltech AI's studio builds bespoke solutions on the Dynavisor substrate.",
-  },
-];
+]
 
 export default function Partnership() {
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-15%' })
+
   return (
-    <section id="partnership" className="relative py-36 px-6 overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] bg-[#c4a55a]/[0.025] rounded-full blur-[140px]" />
-      </div>
+    <section
+      id="partners"
+      ref={ref}
+      style={{
+        position: 'relative', zIndex: 1,
+        padding: 'var(--section-gap) 0',
+        background: 'rgba(6,8,16,0.72)',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 48px' }}>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="rule mb-20" />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-4 mb-20"
-        >
-          <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#c4a55a]/60">
-            03 — Partnership
-          </span>
-          <div className="flex-1 h-px bg-white/[0.05]" />
-        </motion.div>
-
-        {/* Big partnership wordmark */}
-        <div className="text-center mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-[clamp(2rem,6vw,5.5rem)] font-light tracking-[-0.01em] text-[#e2ddd4] mb-3"
-          >
-            Kaltech AI
-            <span className="text-[#e2ddd4]/15 mx-4 md:mx-6">×</span>
-            <span className="gradient-gold">Dynavisor</span>
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-[#e2ddd4]/35 text-sm max-w-xl mx-auto leading-relaxed"
-          >
-            The world&apos;s first fully sovereign AI compute platform.
-            Intelligence that runs fast, stays local, and scales without limits.
-          </motion.p>
+        <div style={{ marginBottom: 64 }}>
+          <div className="section-label" style={{ marginBottom: 20 }}>06 / Partners</div>
+          <h2 className="type-title" style={{ color: 'var(--text-primary)', maxWidth: 560 }}>
+            Built with partners who<br />
+            <em style={{ color: 'var(--gold-light)' }}>operate at sovereign scale.</em>
+          </h2>
         </div>
 
-        {/* Pillars */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.04]">
-          {pillars.map((p, i) => (
+        {/* JV highlight */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background: 'rgba(184,151,90,0.04)',
+            backdropFilter: 'blur(24px) saturate(1.3)',
+            border: '1px solid rgba(184,151,90,0.22)',
+            boxShadow: '0 8px 64px rgba(184,151,90,0.08), 0 4px 32px rgba(0,0,0,0.55)',
+            padding: '40px',
+            marginBottom: 24,
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            gap: 32,
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <div className="type-label" style={{ color: 'var(--gold)', marginBottom: 12 }}>
+              ▲ KalTech AI × Dynavisor — Joint Sovereign AI Platform
+            </div>
+            <h3 className="type-title" style={{ fontSize: 'clamp(22px,3vw,38px)', color: 'var(--text-primary)', marginBottom: 16 }}>
+              Sovereign Financial Intelligence Fabric
+            </h3>
+            <p className="type-body" style={{ color: 'var(--text-muted)', maxWidth: 580 }}>
+              The joint platform delivers regulated enterprises a sovereign data + AI stack:
+              TorrentPro™ as the high-performance data fabric, Sixth Sense as the agentic intelligence layer.
+              Zero commercial API dependencies. Full auditability. Runs in your data center, air-gapped if required.
+            </p>
+            <div style={{ marginTop: 24, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              {['Sovereign Inference', 'Regulated Financial AI', 'Defence Intelligence', 'No Cloud Lock-in'].map(t => (
+                <span key={t} className="type-label" style={{
+                  color: 'var(--gold-dim)', border: '1px solid rgba(184,151,90,0.2)',
+                  padding: '5px 10px', letterSpacing: '0.12em',
+                }}>{t}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="type-label" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>Joint Platform</div>
+            <div style={{
+              fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.15em',
+              color: 'var(--gold)', textTransform: 'uppercase',
+              border: '1px solid rgba(184,151,90,0.3)', padding: '12px 20px',
+            }}>
+              KalTech AI<br /><span style={{ color: 'var(--text-muted)' }}>×</span><br />Dynavisor
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Other partners */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
+          {PARTNERS.slice(1).map((p, i) => (
             <motion.div
-              key={p.label}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="bg-[#000008] p-8 md:p-10 hover:bg-[#04040f] transition-colors duration-400 group"
+              key={p.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: 'rgba(6,8,16,0.48)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(200,205,214,0.08)',
+                borderLeft: '3px solid var(--silver-dim)',
+                padding: '28px 32px',
+                boxShadow: '0 4px 32px rgba(0,0,0,0.4)',
+              }}
             >
-              <div className="font-sans text-[10px] tracking-[0.28em] uppercase text-[#c4a55a]/40 mb-4 group-hover:text-[#c4a55a]/65 transition-colors">
-                {p.label}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                <div>
+                  <div className="type-title" style={{ fontSize: 20, color: 'var(--text-primary)', marginBottom: 4 }}>{p.name}</div>
+                  <div className="type-label" style={{ color: 'var(--text-muted)' }}>{p.location}</div>
+                </div>
+                <span className="type-label" style={{ color: 'var(--silver-dim)', border: '1px solid rgba(200,205,214,0.15)', padding: '4px 8px', fontSize: 7.5 }}>
+                  {p.badge}
+                </span>
               </div>
-              <p className="text-[#e2ddd4]/38 text-sm leading-[1.8]">{p.body}</p>
+              <div className="type-label" style={{ color: 'var(--gold-dim)', marginBottom: 12 }}>{p.role}</div>
+              <p className="type-body" style={{ color: 'var(--text-muted)', fontSize: 13 }}>{p.desc}</p>
             </motion.div>
           ))}
         </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 p-8 border border-white/[0.05]"
-        >
-          <div>
-            <div className="font-display text-2xl font-light text-[#e2ddd4] mb-1">
-              Build on the Sovereign AI Platform
-            </div>
-            <div className="text-[#e2ddd4]/35 text-xs tracking-wide">
-              Talk to the joint Kaltech AI × Dynavisor team about your infrastructure.
-            </div>
-          </div>
-          <a href="#contact" className="btn-gold whitespace-nowrap flex-shrink-0 text-[11px]">
-            Connect With Us →
-          </a>
-        </motion.div>
       </div>
     </section>
-  );
+  )
 }

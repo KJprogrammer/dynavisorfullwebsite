@@ -1,108 +1,147 @@
-"use client";
+'use client'
+import { useRef } from 'react'
+import { motion, useInView, useMotionValue, useTransform } from 'framer-motion'
 
-import { motion } from "framer-motion";
+const CASES = [
+  {
+    sector: 'Financial Services',
+    title: 'Sovereign Financial Intelligence',
+    body: 'Real-time risk analytics, regulatory reporting, and AI-driven market intelligence within your sovereign data perimeter. No commercial APIs. FINRA, SOC 2, MAS, and DORA compliant pathways.',
+    clients: 'Tier-1 Banks · Asset Managers · S&P Global-scale deployments',
+    metric: '70%', metricLabel: 'TCO reduction vs cloud',
+  },
+  {
+    sector: 'Industrial',
+    title: 'Manufacturing Intelligence at Scale',
+    body: 'Computer vision quality control, supply chain sensor fusion, and predictive maintenance across 75+ global factory sites. Millisecond-class inference at the edge.',
+    clients: 'Global manufacturing enterprises · Industrial IoT deployments',
+    metric: '22×', metricLabel: 'Processing speed vs legacy',
+  },
+  {
+    sector: 'Energy & Infrastructure',
+    title: 'Pipeline & Grid Intelligence',
+    body: 'Drone, satellite, and IoT sensor fusion for pre-failure detection on critical infrastructure. Petabyte-scale telemetry processed in real time without cloud egress costs.',
+    clients: 'Energy majors · Grid operators · Critical infrastructure owners',
+    metric: '1+ TB/s', metricLabel: 'Sensor data throughput',
+  },
+  {
+    sector: 'Agricultural & Commodity',
+    title: 'Post-Conflict Reconstruction Intel',
+    body: 'Multi-spectral satellite analysis for reconstruction planning and food security assessment. Ukraine recovery programs. Sovereign data platforms for national agencies.',
+    clients: 'National agencies · UN programs · Commodity funds',
+    metric: '8,000 MB/s', metricLabel: 'Satellite data ingestion',
+  },
+  {
+    sector: 'Defence & Government',
+    title: 'Sovereign Defence Intelligence',
+    body: 'Air-gapped deployment certified. NSA cybersecurity-informed architecture. SAM registered for federal contracting. NATO-compatible sovereign inference without commercial cloud dependency.',
+    clients: 'DoD agencies · NATO members · Intelligence community',
+    metric: 'Air-Gap', metricLabel: 'Ready · AFRL validated',
+  },
+  {
+    sector: 'DoD Cloud Migration',
+    title: 'Zero-Downtime Data Migration',
+    body: 'Dynamic lazy migration from AWS/Azure to TorrentPro™ or OCI. No application downtime. No re-architecture. The data fabric expands to absorb existing workloads incrementally.',
+    clients: 'DoD cloud programs · AWS → TorrentPro migration · OCI partnership',
+    metric: '0', metricLabel: 'Seconds of downtime',
+  },
+]
 
-const cases = [
-  {
-    label: "AI / ML Training",
-    sub: "Most Popular",
-    body: "Slash model training times with DIOVFS-accelerated data pipelines. Faster epochs, lower GPU idle, higher utilization — same hardware.",
-  },
-  {
-    label: "Cloud Acceleration",
-    sub: "Cloud-Native",
-    body: "Retrofit any public cloud tenant with TorrentPro's software overlay — no migration required, instant 10× storage throughput.",
-  },
-  {
-    label: "HPC & Data Centers",
-    sub: "Enterprise",
-    body: "Transform bare-metal clusters into hyper-converged supercomputers. Supercompute-grade performance at commodity cost.",
-  },
-  {
-    label: "Scientific Research",
-    sub: "Research Labs",
-    body: "Accelerate genomics, climate simulations, and large-scale analytics. Handle petabyte workloads with sustained 8 GB/s throughput.",
-  },
-  {
-    label: "Media & Broadcast",
-    sub: "Real-Time",
-    body: "Power 8K rendering, VFX pipelines, and live broadcast workflows with NVMe-native speeds on your existing hardware.",
-  },
-  {
-    label: "Financial Services",
-    sub: "FinTech / Quant",
-    body: "Sub-millisecond data access for quantitative trading, risk modeling, and compliance workloads in sovereign on-prem environments.",
-  },
-];
+function TiltCard({ children, delay }: { children: React.ReactNode; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-10%' })
+  const rotX = useMotionValue(0)
+  const rotY = useMotionValue(0)
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
+    const cx = e.clientX - rect.left - rect.width / 2
+    const cy = e.clientY - rect.top  - rect.height / 2
+    rotX.set((-cy / rect.height) * 6)
+    rotY.set(( cx / rect.width ) * 6)
+  }
+  const onLeave = () => { rotX.set(0); rotY.set(0) }
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 28 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d', perspective: 800 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
 export default function UseCases() {
   return (
-    <section id="use-cases" className="relative py-36 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="rule mb-20" />
+    <section
+      id="solutions"
+      style={{
+        position: 'relative', zIndex: 1,
+        padding: 'var(--section-gap) 0',
+        background: 'rgba(6,8,16,0.65)',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 48px' }}>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-4 mb-20"
-        >
-          <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#c4a55a]/60">
-            04 — Use Cases
-          </span>
-          <div className="flex-1 h-px bg-white/[0.05]" />
-        </motion.div>
-
-        <div className="max-w-3xl mb-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-[clamp(2.4rem,5vw,4.5rem)] font-light leading-[1.06] text-[#e2ddd4]"
-          >
-            Every workload.
-            <br />
-            <em className="gradient-gold not-italic">Every scale.</em>
-          </motion.h2>
+        <div style={{ marginBottom: 64 }}>
+          <div className="section-label" style={{ marginBottom: 20 }}>05 / Solutions</div>
+          <h2 className="type-title" style={{ color: 'var(--text-primary)', maxWidth: 560 }}>
+            Every vertical. Every<br />
+            <em style={{ color: 'var(--gold-light)' }}>sovereign boundary.</em>
+          </h2>
         </div>
 
-        {/* Ticker of use-case tags */}
-        <div className="overflow-hidden mb-20 py-3">
-          <div className="flex gap-3 animate-ticker w-max">
-            {[...cases, ...cases].map((c, i) => (
-              <span
-                key={i}
-                className="px-4 py-1.5 border border-white/[0.06] text-[10px] tracking-[0.22em] uppercase text-[#e2ddd4]/28 whitespace-nowrap font-sans"
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 2 }}>
+          {CASES.map((c, i) => (
+            <TiltCard key={c.title} delay={i * 0.08}>
+              <div
+                style={{
+                  background: 'rgba(6,8,16,0.52)',
+                  backdropFilter: 'blur(20px) saturate(1.2)',
+                  borderLeft: '3px solid var(--gold-dim)',
+                  border: '1px solid rgba(184,151,90,0.08)',
+                  borderLeftColor: 'var(--gold-dim)',
+                  padding: '32px',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
+                  transition: 'background 300ms ease, box-shadow 300ms ease',
+                }}
               >
-                {c.label}
-              </span>
-            ))}
-          </div>
-        </div>
+                <div className="type-label" style={{ color: 'var(--gold)', marginBottom: 16, letterSpacing: '0.18em' }}>
+                  {c.sector}
+                </div>
+                <h3 className="type-title" style={{ fontSize: 'clamp(16px,1.6vw,22px)', color: 'var(--text-primary)', marginBottom: 16, lineHeight: 1.2 }}>
+                  {c.title}
+                </h3>
+                <p className="type-body" style={{ color: 'var(--text-muted)', fontSize: 13, flex: 1, marginBottom: 24 }}>
+                  {c.body}
+                </p>
 
-        {/* Case list */}
-        <div className="divide-y divide-white/[0.04]">
-          {cases.map((c, i) => (
-            <motion.div
-              key={c.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              className="group py-8 grid sm:grid-cols-[220px_1fr_auto] gap-6 items-start hover:bg-white/[0.015] px-4 -mx-4 transition-colors duration-300"
-            >
-              <div>
-                <div className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#c4a55a]/40 mb-2">{c.sub}</div>
-                <div className="font-display text-xl font-light text-[#e2ddd4]/80 group-hover:text-[#e2ddd4] transition-colors">{c.label}</div>
+                <div style={{ marginTop: 'auto' }}>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', marginBottom: 16 }} />
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+                    <span className="type-label" style={{ color: 'var(--text-muted)', fontSize: 8, lineHeight: 1.6 }}>{c.clients}</span>
+                    <div style={{ textAlign: 'right' }}>
+                      <div className="type-metric" style={{ fontSize: 'clamp(18px,2vw,28px)', color: 'var(--gold)', lineHeight: 1 }}>{c.metric}</div>
+                      <div className="type-label" style={{ color: 'var(--text-muted)', fontSize: 7.5 }}>{c.metricLabel}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="text-[#e2ddd4]/35 text-sm leading-[1.85] max-w-lg">{c.body}</p>
-              <div className="text-[#c4a55a]/20 group-hover:text-[#c4a55a]/50 transition-colors text-lg hidden sm:block">→</div>
-            </motion.div>
+            </TiltCard>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }
